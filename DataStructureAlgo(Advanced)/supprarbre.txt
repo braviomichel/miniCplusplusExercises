@@ -1,0 +1,66 @@
+// FONCTION      : Supprimer
+// DESCRIPTION   : Supprime une pNoeud de l arbre 
+//      On peut obtenir un pointeur sur un pNoeud via la methode Rechercher(...); 
+//-------------------------------------------------------------------------------
+  template<class T> 
+  void Cl_Arbre<T>::Supprimer(const T val){ 
+  
+    Cl_Noeud<T> *pNoeud = Rechercher(val);
+
+  //Si le noeud est = NULL , on sort la valeur n'existe pas. 
+    if (!pNoeud){
+     cout << "Recherche infructueuse! impossible de trouver cette valeur." << endl;
+     return; 
+    }//end if
+
+  //Créations 3 pointeurs pour mémoriser 
+  //les paramétres de pointeurs du Noeuds à supprimer et la racine
+    Cl_Noeud<T> *droite = pNoeud->droite; 
+    Cl_Noeud<T> *gauche = pNoeud->gauche; 
+    Cl_Noeud<T> *courant = racine; 
+  
+  //CAS 1 : La valeur à supprimer est dans le noeud racine
+    if(pNoeud == racine){ 
+    //On transfer le pointeur droite supérieur dans racine
+      racine = droite; 
+
+    //Si le pointeur gauche du noeud supprimé n'est pas NULL,
+    //Il faut réinsérer le noeud qui à été coupé par la suppression
+    //pour reconstruire notre arbre
+      if(gauche) Inserer(gauche); 
+
+    //On libere la mémoire du noeud contenant la valeur supprimée
+      delete pNoeud;
+      return; 
+    }//end if 
+  
+  //CAS 2 : tous les autres cas
+  // on fait un balayage à travers l'arborescence
+    while(courant){ 
+    //Si une des branches de ce noeud est celle que l'on recherche, 
+    //on sort de la boucle while 
+      if(courant->droite == pNoeud || courant->gauche == pNoeud) break;
+
+    //Sinon, on continue
+      if(pNoeud->valeur >= courant->valeur) 
+        courant = courant->droite; 
+       else 
+         courant = courant->gauche; 
+     }//end while 
+  
+
+
+    if(courant->droite == pNoeud) 
+      courant->droite = droite; 
+     else 
+       courant->gauche = droite; 
+  //end if
+
+  //Accrochage du fils du Noeud disparu 
+    if(gauche) Inserer(gauche); 
+  
+  //Enfin, on libère l'objet pNoeud de la mémoire
+    delete pNoeud; 
+    cout << "Noeud effacé!" << endl;
+  }//end process 
+  
